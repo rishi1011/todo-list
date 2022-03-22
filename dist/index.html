@@ -13,103 +13,122 @@
 <body>
     <div class="layout">
         <div class="header">
-            <span class="material-icons-outlined menu">
+            <span class="material-icons-outlined menu-icon">
                 menu
             </span>
 
             <h1 class="app-title">Todo List</h1>
         </div>
-        <div class="sidebar">
-            <ul class="projects">
-                <li class="selected">
-                    <span class="material-icons-outlined">
-                        inbox
-                    </span>
-                    <p class="project-title">Inbox</p>
-                    <span class="count">1</span>
-                </li>
-                <li>
-                    <span class="material-icons-outlined">
-                        today
-                    </span>
-                    <p class="project-title">Today</p>
-                    <span class="count">1</span>
-                </li>
-                <li>
-                    <span class="material-icons-outlined">
-                        calendar_month
-                    </span>
-                    <p class="project-title">Upcoming</p>
-                    <span class="count">1</span>
-                </li>
-            </ul>
-
-            <div class="user-section">
-                <div class="heading">
-                    <p class="sidebar-heading"><strong>Projects</strong></p>
-                    <span class="material-icons-outlined">
-                        add
-                    </span>
-                </div>
-                <ul class="user-projects">
+        <main>
+            <div class="sidebar">
+                <ul class="projects">
+                    <li class="selected">
+                        <span class="material-icons-outlined">
+                            inbox
+                        </span>
+                        <p class="project-title">Inbox</p>
+                        <span class="count">1</span>
+                    </li>
                     <li>
-                        <p class="project-title">Welcome</p>
+                        <span class="material-icons-outlined">
+                            today
+                        </span>
+                        <p class="project-title">Today</p>
+                        <span class="count">1</span>
+                    </li>
+                    <li>
+                        <span class="material-icons-outlined">
+                            calendar_month
+                        </span>
+                        <p class="project-title">Upcoming</p>
                         <span class="count">1</span>
                     </li>
                 </ul>
-            </div>
-        </div>
-        <div class="main-content">
-            <div class="inbox-content">
-                <h2 class="project-header">Inbox</h2>
 
-                <ul class="tasks">
-                    <li class="task">
-                        <span class="material-icons-outlined">
-                            radio_button_unchecked
+                <div class="user-section">
+                    <div class="heading">
+                        <p class="sidebar-heading"><strong>Projects</strong></p>
+                        <span class="material-icons-outlined add-icon">
+                            add
                         </span>
-                        <p>Name</p>
-                    </li>
-                    <li class="task">
-                        <span class="material-icons-outlined">
-                            radio_button_unchecked
-                        </span>
-                        <p>Name</p>
-                    </li>
-                </ul>
-
-                <span class="add-task">
-                    <span class="material-icons-outlined">
-                        add
-                    </span>
-                    Add Task
-                </span>
-
-                <div class="new-task hide">
-                    <div class="text-input-container">
-                        <textarea type="text" class="task-title" placeholder="Complete the given home work" required
-                            rows="1"></textarea>
-
-                        <textarea type="text" class="task-desc" placeholder="Description" rows="2"></textarea>
                     </div>
-
-                    <input type="date" class="task-schedule">
-                    <select class="select-project">
-                        <option value="Inbox">Inbox</option>
-                        <option value="Welcome">Welcome</option>
-                    </select>
-
-                    <br>
-
-                    <button type="submit" class="btn add">
-                        Add
-                    </button>
-                    <button class="btn cancel">
-                        Cancel
-                    </button>
+                    <ul class="user-projects">
+                        <li>
+                            <p class="project-title">Welcome</p>
+                            <span class="count">1</span>
+                        </li>
+                    </ul>
                 </div>
             </div>
-        </div>
+            <div class="main-content">
+                <div class="project-content">
+                    <h2 class="project-header">Inbox</h2>
+
+                    <ul class="tasks">
+                        <li class="task">
+                            <span class="material-icons-outlined checkbox">
+                                check_box_outline_blank
+                            </span>
+                            <p>Name</p>
+                            <span class="material-icons-outlined delete-icon">
+                                delete
+                            </span>
+                        </li>
+                        <hr>
+                        <li class="task">
+                            <span class="material-icons-outlined checkbox">
+                                check_box_outline_blank
+                            </span>
+                            <p>Name</p>
+                            <span class="material-icons-outlined delete-icon">
+                                delete
+                            </span>
+                        </li>
+                        <hr>
+                        <li class="task">
+                            <span class="material-icons-outlined checkbox">
+                                check_box_outline_blank
+                            </span>
+                            <p>Name</p>
+                            <span class="material-icons-outlined delete-icon">
+                                delete
+                            </span>
+                        </li>
+                    </ul>
+
+                    <span class="add-task">
+                        <span class="material-icons-outlined">
+                            add
+                        </span>
+                        Add Task
+                    </span>
+
+                    <div class="new-task hide">
+                        <div class="text-input-container">
+                            <textarea type="text" class="task-title" placeholder="Complete the given home work" required
+                                rows="1"></textarea>
+
+                            <textarea type="text" class="task-desc" placeholder="Description" rows="2"></textarea>
+                        </div>
+
+                        <input type="date" class="task-schedule">
+                        <select class="select-project">
+                            <option value="Inbox">Inbox</option>
+                            <option value="Welcome">Welcome</option>
+                        </select>
+
+                        <br>
+
+                        <button type="submit" class="btn add">
+                            Add
+                        </button>
+                        <button class="btn cancel">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
     </div>
 </body>
 
