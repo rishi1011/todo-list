@@ -1,0 +1,27 @@
+{
+  "name": "todo-list",
+  "version": "1.0.0",
+  "description": "A list of todo items created and to be completed within due date.",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/rishi1011/todo-list.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rishi1011/todo-list/issues"
+  },
+  "homepage": "https://github.com/rishi1011/todo-list#readme",
+  "devDependencies": {
+    "webpack": "^5.70.0",
+    "webpack-cli": "^4.9.2"
+  },
+  "dependencies": {
+    "date-fns": "^2.28.0"
+  }
+}
