@@ -22,21 +22,21 @@
         <main>
             <div class="sidebar">
                 <ul class="projects">
-                    <li class="selected">
+                    <li class="selected default-project project">
                         <span class="material-icons-outlined">
                             inbox
                         </span>
                         <p class="project-title">Inbox</p>
                         <span class="count">1</span>
                     </li>
-                    <li>
+                    <li class="default-project project">
                         <span class="material-icons-outlined">
                             today
                         </span>
                         <p class="project-title">Today</p>
                         <span class="count">1</span>
                     </li>
-                    <li>
+                    <li class="default-project project">
                         <span class="material-icons-outlined">
                             calendar_month
                         </span>
@@ -51,18 +51,46 @@
                         <span class="material-icons-outlined add-icon">
                             add
                         </span>
+
+                        <div class="add-project hide">
+                            <input type="text" placeholder="Title" class="new-title"><br>
+                            <div class="icons">
+                                <span class="material-icons-outlined done-icon">
+                                    done
+                                </span>
+                                <span class="material-icons-outlined close-icon">
+                                    close
+                                </span>
+                            </div>
+                        </div>
                     </div>
                     <ul class="user-projects">
-                        <li>
+                        <li class="user-project project">
+                            <span class="material-icons-outlined">
+                                checklist
+                            </span>
                             <p class="project-title">Welcome</p>
                             <span class="count">1</span>
+                            <span class="material-icons-outlined clear-icon">
+                                clear
+                            </span>
+                        </li>
+                        <li class="user-project project">
+                            <span class="material-icons-outlined">
+                                checklist
+                            </span>
+                            <p class="project-title">Welcome</p>
+                            <span class="count">1</span>
+                            <span class="material-icons-outlined clear-icon">
+                                clear
+                            </span>
                         </li>
                     </ul>
                 </div>
             </div>
             <div class="main-content">
                 <div class="project-content">
-                    <h2 class="project-header">Inbox</h2>
+                    <h2 class="project-header">Inox</h2>
 
                     <ul class="tasks">
                         <li class="task">

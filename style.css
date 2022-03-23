@@ -12,6 +12,8 @@
     --btn-color: #8367c7;
     --text-color: #02060B;
     --error-color: #B00020;
+    --selected: #EEEEEE;
+    --strike: lightgray;
 }
 
 body {
@@ -19,7 +21,7 @@ body {
     height: 100vh;
     margin: 0;
     overflow: hidden;
-    background-color: #f0fff1;
+    background-color: #fff;
     width: 100%;
 }
 
@@ -39,7 +41,7 @@ p{
 .header{
     display: flex;
     align-items: center;
-    height: 100px;
+    height: 10%;
     gap: 50px;
     background-color: var(--header-color);
     color: var(--main-content)
@@ -52,7 +54,10 @@ p{
 .menu-icon,
 .delete-icon,
 .add-icon,
-.checkbox{
+.checkbox,
+li.project,
+.done-icon,
+.close-icon{
     cursor: pointer;
     transition: transform 0.2s ease;
 }
@@ -60,14 +65,20 @@ p{
 .menu-icon:hover,
 .delete-icon:hover,
 .add-icon:hover,
-.checkbox:hover{
+.checkbox:hover,
+li.project:hover,
+.done-icon:hover,
+.close-icon:hover{
     transform: scale(1.1);
 }
 
 .menu-icon:active,
 .delete-icon:active,
 .add-icon:active,
-.checkbox:active{
+.checkbox:active,
+li.project:active,
+.done-icon:active,
+.close-icon:active{
     transform: scale(0.9);
 }
 
@@ -81,11 +92,17 @@ main{
     color: var(--text-color);
     font-size: 1.1rem;
     width: 400px;
-    transition: width 0.4s ease-in-out;
+    transition: all 0.3s ease-in-out;
+    height: 90%;
 }
 
 .sidebar.hide{
     width: 0;
+    opacity: 0;
+}
+
+.sidebar.hide > * {
+    display: none;
 }
 
 ul{
@@ -98,8 +115,15 @@ ul{
 li{
     display: flex;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     cursor: pointer;
+    padding: 8px;
+    border-radius: 5px;
+}
+
+li.selected{
+    background-color: var(--selected);
+    font-weight: bold;
 }
 
 .project-title{
@@ -108,6 +132,7 @@ li{
 
 .count{
     margin-left: auto;
+    color: rgba(0, 0, 0, 0.6);
 }
 
 .heading{
@@ -115,6 +140,83 @@ li{
     align-items: center;
     justify-content: space-between;
     margin: 20px;
+    position: relative;
+}
+
+.add-project{
+    position: absolute;
+    right: -200px;
+    top: 10px;
+    padding: 10px;
+    background-color: var(--main-content);
+    z-index: 1;
+    border-radius: 0px 8px 8px;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
+    outline: .5px solid var(--side-bar-color);
+    transition: all .3s ease-in-out;
+}
+
+.add-project.hide{
+    opacity: 0;
+    height: 0;
+    width: 0;
+    outline: none;
+}
+
+.add-project.hide > * {
+    display: none;
+}
+
+.new-title{
+    border: none;
+    border-bottom: 1px solid var(--side-bar-color);
+    font-size: 1rem;
+    padding: 5px;
+}
+
+.new-title:focus{
+    outline: 0;
+}
+
+.icons{
+    margin-top: 5px;
+}
+
+.done-icon{
+    margin-left: 120px;
+}
+
+.project{
+    position: relative;
+}
+
+.clear-icon{
+    position: absolute;
+    right: 0;
+    width: 0;
+    opacity: 0;
+    transition: width 0.4s ease-in-out;
+}
+
+li.user-project:hover > .clear-icon {
+    width: 30px;
+    opacity: 1;
+    z-index: 10;
+}
+
+.user-section{
+    height: 77%;
+}
+
+.user-projects{
+    height: 90%;
+    padding: 5px 16px;
+    overflow-y: scroll;
+    overflow-x: visible;
+}
+
+.user-projects > li.user-project:hover > .count{
+    display: none;
 }
 
 .main-content{
@@ -126,7 +228,7 @@ li{
 .project-content{
     margin: 0 auto;
     width: 70%;
-    height: 99%;
+    max-height: 90%;
     overflow: auto;
 }
 
@@ -138,10 +240,12 @@ li.task{
     justify-content: flex-start;
     gap: 15px;
     margin: 5px 0;
+    padding: 0;
+    border-radius: 0;
 }
 
 li.task.strike{
-    color: gray;
+    color: var(--strike);
 }
 
 .delete-icon{
