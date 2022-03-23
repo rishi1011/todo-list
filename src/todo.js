@@ -6,41 +6,41 @@ export default class Todo{
         this.project = project;
     }
     
-    get title() {
+    getTitle() {
         return this.title;
     }
 
-    get desc() {
+    getDesc() {
         return this.desc;
     }
 
-    get date() {
+    getDate() {
         return this.date;
     }
 
-    get project() {
+    getProject() {
         return this.project;
     }
 
-    set title(title) {
+    setTitle(title) {
         if (title === '') {
             alert('Title is required!');
             return;
         }
 
-        this._title = title;
+        this.title = title;
     }
 
-    set desc(desc) {
-        this._desc = desc;
+    setDesc(desc) {
+        this.desc = desc;
     }
 
-    set date(date) {
-        this._date = date;
+    setDate(date) {
+        this.date = date;
     }
 
-    set project(project) {
-        this._project = project;
+    setProject(project) {
+        this.project = project;
     }
 
 
