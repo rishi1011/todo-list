@@ -1,6 +1,6 @@
-import { isThisWeek, isToday, toDate } from "date-fns";
+import { isToday, isFuture } from "date-fns";
 
-export default class Project{
+export default class Project {
     constructor(name) {
         this.name = name;
         this.todos = [];
@@ -14,6 +14,10 @@ export default class Project{
         return this.todos;
     }
 
+    getTodosLength() {
+        return this.todos.length;
+    }
+
     setName(name) {
         this.name = name;
     }
@@ -23,7 +27,22 @@ export default class Project{
     }
 
     addTodo(todo) {
+        if (this.isTodoDuplicate(todo)) {
+            return false;
+        }
         this.todos.push(todo);
+        return true;
+    }
+
+    isTodoDuplicate(todo) {
+        let isDuplicate = false;
+        this.todos.forEach(item => {
+            if (item.getTitle() === todo.getTitle()) {
+                alert('The Task names must be different');
+                isDuplicate = true;
+            }
+        });
+        return isDuplicate;
     }
 
     getTodosToday() {
@@ -33,9 +52,9 @@ export default class Project{
         return todosToday;
     }
 
-    getTodosThisWeek() {
+    getUpcomingTodos() {
         const todosThisWeek = this.todos.filter(todo => {
-            return isThisWeek(new Date(todo.date));
+            return isFuture(new Date(todo.date));
         });
         return todosThisWeek;
     }

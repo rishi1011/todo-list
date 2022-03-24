@@ -107,15 +107,16 @@ main{
 
 ul{
     padding: 0;
-    margin: 0 auto;
+    /* margin: 0 auto; */
     list-style: none;
     margin: 20px;
+    padding: 0px 16px;
 }
 
 li{
     display: flex;
     align-items: center;
-    margin-bottom: 15px;
+    margin: 10px 0;
     cursor: pointer;
     padding: 8px;
     border-radius: 5px;
@@ -139,13 +140,26 @@ li.selected{
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin: 20px;
+    padding: 8px 38px;
     position: relative;
+    height: 40px;
+}
+
+/* .heading:hover > .add-icon{
+    display: block;
+} */
+
+.add-icon.show{
+    display: block;
+}
+
+.add-icon{
+    display: none;
 }
 
 .add-project{
     position: absolute;
-    right: -200px;
+    right: -175px;
     top: 10px;
     padding: 10px;
     background-color: var(--main-content);
@@ -195,7 +209,7 @@ li.selected{
     right: 0;
     width: 0;
     opacity: 0;
-    transition: width 0.4s ease-in-out;
+    transition: width 0.2s ease-in-out;
 }
 
 li.user-project:hover > .clear-icon {
@@ -205,14 +219,27 @@ li.user-project:hover > .clear-icon {
 }
 
 .user-section{
-    height: 77%;
+    height: 80%;
+}
+
+.user-section:hover .add-icon{
+    display: block;
 }
 
 .user-projects{
-    height: 90%;
-    padding: 5px 16px;
+    max-height: 90%;
     overflow-y: scroll;
     overflow-x: visible;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px -20px 16px -28px inset;
+    margin-top: 0;
+    margin-bottom: 0;
+    width: 100%;
+    margin: 0;
+    padding: 0 30px;
+}
+
+.user-projects:hover .heading{
+    background-color: #02060B;
 }
 
 .user-projects > li.user-project:hover > .count{
@@ -227,13 +254,14 @@ li.user-project:hover > .clear-icon {
 
 .project-content{
     margin: 0 auto;
-    width: 70%;
+    width: 60%;
     max-height: 90%;
     overflow: auto;
 }
 
 ul.tasks{
     margin: 0 0 20px 0;
+    padding: 0;
 }
 
 li.task{
@@ -253,19 +281,44 @@ li.task.strike{
     margin-left: auto;
 }
 
+.add-task-icon{
+    border-radius: 50%;
+    color: var(--btn-color);
+}
+
+.add-task-text{
+    margin-left: 5px;
+    font-size: 1rem;
+    color: rgb(142, 142, 142);
+}
+
 .add-task{
     display: flex;
     align-items: center;
     cursor: pointer;
+    transition: all 0.4s ease;
+}
+
+.add-task:hover > .add-task-icon{
+    color: var(--main-content);
+    background-color: var(--btn-color);
+}
+
+.add-task:hover > .add-task-text{
+    color: var(--btn-color);
 }
 
 .add-task.hide{
+    /* display: none; */
+    opacity: 0;
+    height: 0;
+    width: 0;
+}
+
+.add-task.hide > * {
     display: none;
 }
 
-.add-task:hover{
-    color: var(--header-color);
-}
 
 .new-task{
     margin: 5px;

@@ -4,6 +4,7 @@ export default class Todo{
         this.desc = desc;
         this.date = date;
         this.project = project;
+        this.isChecked = false;
     }
     
     getTitle() {
@@ -43,5 +44,7 @@ export default class Todo{
         this.project = project;
     }
 
-
+    toggleChecked() {
+        this.isChecked = !this.isChecked;
+    }
 }
