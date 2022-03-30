@@ -6,8 +6,8 @@ import Project from './project.js';
 
 const newTaskContainer = document.querySelector('.new-task');
 const addTaskBtn = document.querySelector('.add-task');
-const cancelBtn = document.querySelector('.new-task > .btn.cancel');
-const addBtn = document.querySelector('.new-task > .btn.add');
+const cancelBtn = document.querySelector('.new-task .btn.cancel');
+const addBtn = document.querySelector('.new-task .btn.add');
 const taskSchedule = document.querySelector('.task-schedule');
 const menu = document.querySelector('.material-icons-outlined.menu-icon');
 const sidebar = document.querySelector('.sidebar');
@@ -21,9 +21,21 @@ const projectHeader = document.querySelector('h2.project-header');
 const tasks = document.querySelector('ul.tasks');
 const projectSelector = document.querySelector('.select-project');
 
+const newTaskForm = document.querySelector('.new-task > form');
+const addProjectForm = document.querySelector('.add-project > form');
+
+document.body.addEventListener('click', addProjectContainerListener);
+
+function addProjectContainerListener(e) {
+    const res1 = e.target !== addProjectIcon;
+    const res2 = e.target.closest('.add-project') !== addProjectContainer;
+    if (res1 && res2) {
+        hideAddProjectContainer();
+    }
+}
 
 closeIcon.addEventListener('click', () => {
-    addProjectContainer.classList.add('hide');
+    hideAddProjectContainer();
 });
 
 defaultProjects.forEach(defaultProject => {
@@ -31,17 +43,31 @@ defaultProjects.forEach(defaultProject => {
 });
 
 addProjectIcon.addEventListener('click', () => {
-    addProjectContainer.classList.remove('hide');
+    showAddProjectContainer();
 });
 
-addBtn.addEventListener('click', () => {
+function showAddProjectContainer() {
+    addProjectContainer.classList.remove('hide');
+    // document.body.addEventListener('click', addProjectContainerListener);
+}
+
+function hideAddProjectContainer() {
+    addProjectContainer.classList.add('hide');
+    // document.body.removeEventListener('click', addProjectContainerListener);
+}
+
+newTaskForm.addEventListener('submit', createNewTask);
+addBtn.addEventListener('click', createNewTask);
+
+function createNewTask(e) {
+    e.preventDefault();
     const newTaskTitle = newTaskContainer.querySelector('.task-title');
     const newTaskDesc = newTaskContainer.querySelector('.task-desc');
     const newTaskSchedule = newTaskContainer.querySelector('.task-schedule');
     const newTaskProject = newTaskContainer.querySelector('.select-project');
 
-    if (newTaskTitle.value === '') {
-        alert('Task title is required!');
+    if (newTaskTitle.validity.valueMissing) {
+        newTaskTitle.reportValidity();
         return;
     }
 
@@ -52,27 +78,23 @@ addBtn.addEventListener('click', () => {
     const isAdded = projectObj.addTodo(newTodoTask);
 
     if (isAdded) {
-        const projectElement = findProjectElementFromTitle(newTaskProject.value);
-        updateSelectedProjectFromSideBar(projectElement);
-        updateMainContent(newTaskProject.value);
+        updateMainContent(projectHeader.innerText);
         updateProjectTaskCount();
-        updateTaskContainer(newTaskTitle, newTaskDesc, newTaskSchedule);
+        updateTaskContainer(newTaskTitle, newTaskDesc);
     }
-});
-
-function updateTaskContainer(newTaskTitle, newTaskDesc, newTaskSchedule) {
-    newTaskTitle.value = '';
-    newTaskDesc.value = '';
-    newTaskSchedule.value = today;
 }
 
+function updateTaskContainer(newTaskTitle, newTaskDesc) {
+    newTaskTitle.value = '';
+    newTaskDesc.value = '';
+}
 
 function getProjectTitleFromElement(projectElement) {
     const title = projectElement.querySelector('.project-title').textContent;
     return title;
 }
 
-function findProjectElementFromTitle(title) {
+function getProjectElementFromTitle(title) {
     const projectElements = [...document.querySelectorAll('.project')];
     let element;
     projectElements.forEach(projectElement => {
@@ -122,6 +144,11 @@ cancelBtn.addEventListener('click', () => {
 });
 
 function showNewTaskContainer() {
+    if (projectHeader.innerText === 'Upcoming') {
+        taskSchedule.value = tomorrow;
+    } else {
+        taskSchedule.value = today;
+    }
     newTaskContainer.classList.remove('hide');
     addTaskBtn.classList.add('hide');
 }
@@ -133,7 +160,7 @@ function hideNewTaskContainer() {
 
 function hasCompletedTodoTask(checkbox, todo) {
     let p = checkbox.nextElementSibling;
-    let task = checkbox.parentElement;
+    let task = checkbox.parentElement.parentElement;
     task.classList.toggle('strike');
 
     if (checkbox.innerText === 'check_box') {
@@ -147,12 +174,19 @@ function hasCompletedTodoTask(checkbox, todo) {
     todo.toggleChecked();
 }
 
-function updateSelectedProjectFromSideBar(project) {
+function updateSelectedProjectFromSideBar(projectElement) {
     const selectedProject = document.querySelector('.sidebar .selected');
-    selectedProject.classList.remove('selected');
-    project.classList.add('selected');
+    let projectTitle;
+    if (selectedProject === null) {
+        projectTitle = getAvailableProject().getName();
+        projectElement = getProjectElementFromTitle(projectTitle);
+        projectElement.classList.add('selected');
+    } else {
+        selectedProject.classList.remove('selected');
+        projectElement.classList.add('selected');
+        projectTitle = getProjectTitleFromElement(projectElement);
+    }
 
-    const projectTitle = getProjectTitleFromElement(project); 
     selectProjectUnderSelector(projectTitle);
 }
 
@@ -160,35 +194,59 @@ menu.addEventListener('click', () => {
     sidebar.classList.toggle('hide');
 });
 
-doneIcon.addEventListener('click', () => {
+addProjectForm.addEventListener('submit', createNewProject);
+doneIcon.addEventListener('click', createNewProject);
+
+function createNewProject(e) {
+    e.preventDefault();
     const titleEle = addProjectContainer.querySelector('.new-title');
     const newTitle = titleEle.value;
-    titleEle.value = '';
+
+    if (titleEle.validity.valueMissing) {
+        titleEle.reportValidity();
+        return;
+    }
 
     const isDuplicate = isDuplicateProjectName(newTitle);
-    if (newTitle === '' || isDuplicate) return;
+    if (isDuplicate) return;
+
+    titleEle.value = '';
 
     addProjectContainer.classList.add('hide');
     createAndPushNewProject(newTitle);
     const newProjectElement = createNewProjectElement(newTitle);
     userProjectsContainer.appendChild(newProjectElement);
     newProjectElement.addEventListener('click', () => addProjectListener(newProjectElement));
-});
+}
 
 function createNewProjectElement(title) {
     const newProjectElement = document.createElement('li');
     newProjectElement.classList.add('user-project', 'project');
-    newProjectElement.innerHTML = `
-    <span class="material-icons-outlined">
+    const clearIcon = createClearIcon();
+    newProjectElement.appendChild(clearIcon);
+    newProjectElement.insertAdjacentHTML('beforeend',`<span class="material-icons-outlined checklist-icon">
     checklist
     </span>
     <p class="project-title">${title}</p>
-    <span class="count"></span>
-    <span class="material-icons-outlined clear-icon">
-    clear
-    </span>`;
+    <span class="count"></span>`);
     addNewProjectUnderSelector(title);
     return newProjectElement;
+}
+
+function createClearIcon() {
+    const span = document.createElement('span');
+    span.classList.add('material-icons-outlined', 'clear-icon');
+    span.innerText = 'clear';
+    span.addEventListener('click', () => deleteProject(span));
+    return span;
+}
+
+function deleteProject(span) {
+    const projectTitle = span.parentElement.querySelector('.project-title').innerText;
+    deleteProjectObj(projectTitle);
+    const projectElement = getProjectElementFromTitle(projectTitle);
+    projectElement.remove();
+    updateProjectTaskCount();
 }
 
 function addNewProjectUnderSelector(title) {
@@ -225,17 +283,115 @@ function createCheckBoxElement(todo) {
 function createParagraphElement(todo) {
     const p = document.createElement('p');
     p.innerText = todo.getTitle();
-    if (todo.getProject() === 'Today' || todo.getProject() === 'Upcoming') {
+    if (projectHeader.innerText === 'Today' || projectHeader.innerText === 'Upcoming') {
         p.innerText += `  (${todo.getProject()})`;
     }
     return p;
+}
+
+function createDropDownIconElement() {
+    const dropDownIcon = document.createElement('span');
+    dropDownIcon.classList.add('material-icons-outlined', 'drop-down-icon');
+    dropDownIcon.innerText = 'expand_more';
+    dropDownIcon.addEventListener('click', () => dropDownTaskListener(dropDownIcon));
+    return dropDownIcon;
+}
+
+function dropDownTaskListener(dropDownIcon) {
+    const taskElement = dropDownIcon.parentElement.parentElement;
+    const hiddenContent = taskElement.querySelector('.hidden-content');
+    hiddenContent.classList.toggle('hide');
 }
 
 function createDeleteIcon() {
     const deleteIcon = document.createElement('span');
     deleteIcon.classList.add('material-icons-outlined', 'delete-icon');
     deleteIcon.innerText = 'delete';
+    deleteIcon.addEventListener('click', () => deleteTaskListener(deleteIcon));
     return deleteIcon;
+}
+
+function deleteTaskListener(deleteIcon) {
+    const headerTitle = projectHeader.innerText;
+
+    let projectTitle;
+    let projectObj;
+    let taskTitle;
+    let taskObj;
+
+    if (headerTitle === 'Today' || headerTitle === 'Upcoming') {
+        const taskText = deleteIcon.parentElement.querySelector('p').innerText;
+        projectTitle = getProjectTitleFromCombinedName(taskText);
+        taskTitle = getTaskTitleFromFromCombinedName(taskText);
+
+        projectObj = getProjectObject(projectTitle);
+        taskObj = projectObj.getTodoFromList(taskTitle);
+
+        projectObj.deleteTask(taskObj);
+
+        projectTitle = headerTitle;
+    } else {
+        projectTitle = headerTitle;
+        projectObj = getProjectObject(projectTitle);
+
+        taskTitle = deleteIcon.parentElement.querySelector('p').innerText;
+        taskObj = projectObj.getTodoFromList(taskTitle);
+
+        projectObj.deleteTask(taskObj);
+    }
+    const projectElement = getProjectElementFromTitle(projectTitle);
+
+    updateSelectedProjectFromSideBar(projectElement);
+    updateMainContent(projectTitle);
+    updateProjectTaskCount();
+}
+
+function createDueDateElement(todo) {
+    const div = document.createElement('div');
+    div.classList.add('due-date');
+    const p1 = document.createElement('p');
+    p1.classList.add('title');
+    const p2 = document.createElement('p');
+    p1.innerText = 'Due Date';
+    p2.innerText = todo.getDate();
+
+    div.appendChild(p1);
+    div.appendChild(p2);
+
+    return div;
+}
+
+function createDisplayProjectElement(todo) {
+    const div = document.createElement('div');
+    div.classList.add('project-name');
+    const p1 = document.createElement('p');
+    p1.classList.add('title');
+    const p2 = document.createElement('p');
+    p1.innerText = 'Project';
+    p2.innerText = todo.getProject();
+    div.appendChild(p1);
+    div.appendChild(p2);
+    return div;
+}
+
+function createDetailsElement(todo) {
+    const div = document.createElement('div');
+    div.classList.add('details');
+    const p1 = document.createElement('p');
+    p1.classList.add('title');
+    const p2 = document.createElement('p');
+    p1.innerText = 'Details';
+    p2.innerText = todo.getDesc();
+    div.appendChild(p1);
+    div.appendChild(p2);
+    return div;
+}
+
+function createEditIcon() {
+    const span = document.createElement('span');
+    span.classList.add('material-icons-outlined', 'edit-icon');
+    span.innerText = 'edit_note';
+    return span;
 }
 
 function createTodoElement(todo) {
@@ -244,16 +400,42 @@ function createTodoElement(todo) {
     if (todo.isChecked) todoEle.classList.add('strike');
     const checkbox = createCheckBoxElement(todo);
     const p = createParagraphElement(todo);
+    const dropDownIcon = createDropDownIconElement();
     const deleteIcon = createDeleteIcon();
-    todoEle.appendChild(checkbox);
-    todoEle.appendChild(p);
-    todoEle.appendChild(deleteIcon);
+
+    const defaultContent = document.createElement('div');
+    defaultContent.classList.add('default-content');
+
+    defaultContent.appendChild(checkbox);
+    defaultContent.appendChild(p);
+    defaultContent.appendChild(dropDownIcon);
+    defaultContent.appendChild(deleteIcon);
+
+    const hiddenContent = document.createElement('div');
+    hiddenContent.classList.add('hidden-content', 'hide');
+    const dueDate = createDueDateElement(todo);
+    const project = createDisplayProjectElement(todo);
+    const details = createDetailsElement(todo);
+    const editIcon = createEditIcon();
+
+    hiddenContent.appendChild(dueDate);
+    hiddenContent.appendChild(project);
+    hiddenContent.appendChild(details);
+    hiddenContent.appendChild(editIcon);
+
+    todoEle.appendChild(defaultContent);
+    todoEle.appendChild(hiddenContent);
     return todoEle;
 }
 
-function addProjectListener(project) {
-    const projectTitle = getProjectTitleFromElement(project);
-    updateSelectedProjectFromSideBar(project);
+function addProjectListener(projectElement) {
+    updateSelectedProjectFromSideBar(projectElement);
+    let projectTitle = getProjectTitleFromElement(projectElement);
+    let projectObj = getProjectObject(projectTitle);
+    if (projectObj === undefined && projectTitle !== 'Today' && projectTitle !== 'Upcoming') {
+        projectObj = getAvailableProject();
+        projectTitle = projectObj.getName();
+    }
     updateMainContent(projectTitle);
 }
 
@@ -266,7 +448,6 @@ function updateTodosList(todos) {
 
         tasks.appendChild(todoEle);
     });
-
 }
 
 function updateMainContent(projectTitle) {
@@ -350,4 +531,38 @@ function getProjectObject(title) {
         }
     });
     return obj;
+}
+
+function getAvailableProject() {
+    let projectObj;
+    if (allProjects.length > 1) {
+        projectObj = allProjects[1];
+    } else {
+        projectObj = allProjects[0];
+    }
+    return projectObj;
+}
+
+function deleteProjectObj(projectTitle) {
+    const projectObj = getProjectObject(projectTitle);
+    const objIdx = allProjects.indexOf(projectObj);
+    allProjects.splice(objIdx, 1);
+}
+
+function getProjectTitleFromCombinedName(combinedName) {
+    const regex = /\((.*)\)/;
+    const projectTitle = combinedName.match(regex)[1];
+    return projectTitle;
+}
+
+function getTaskTitleFromFromCombinedName(combinedName) {
+    let taskTitle = '';
+    for (let i = 0; i < combinedName.length; i++) {
+        if (combinedName[i] !== '(') {
+            taskTitle += combinedName[i];
+        } else {
+            break;
+        }
+    }
+    return taskTitle.trim();
 }

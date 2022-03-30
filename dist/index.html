@@ -53,74 +53,54 @@
                         </span>
 
                         <div class="add-project hide">
-                            <input type="text" placeholder="Title" class="new-title"><br>
-                            <div class="icons">
-                                <span class="material-icons-outlined done-icon">
-                                    done
-                                </span>
-                                <span class="material-icons-outlined close-icon">
-                                    close
-                                </span>
-                            </div>
+                            <form>
+                                <input type="text" placeholder="Title" class="new-title" required>
+                                <div class="icons">
+                                    <span class="material-icons-outlined done-icon">
+                                        done
+                                    </span>
+                                    <span class="material-icons-outlined close-icon">
+                                        close
+                                    </span>
+                                </div>
+                            </form>
                         </div>
                     </div>
-                    <ul class="user-projects">
-                        <!-- <li class="user-project project">
-                            <span class="material-icons-outlined">
-                                checklist
-                            </span>
-                            <p class="project-title">Welcome</p>
-                            <span class="count">1</span>
-                            <span class="material-icons-outlined clear-icon">
-                                clear
-                            </span>
-                        </li>
-                        <li class="user-project project">
-                            <span class="material-icons-outlined">
-                                checklist
-                            </span>
-                            <p class="project-title">Welcome</p>
-                            <span class="count">1</span>
-                            <span class="material-icons-outlined clear-icon">
-                                clear
-                            </span>
-                        </li> -->
-                    </ul>
+                    <ul class="user-projects"></ul>
                 </div>
             </div>
             <div class="main-content">
                 <div class="project-content">
-                    <h2 class="project-header">Inox</h2>
+                    <h2 class="project-header">Inbox</h2>
 
                     <ul class="tasks">
                         <!-- <li class="task">
-                            <span class="material-icons-outlined checkbox">
-                                check_box_outline_blank
-                            </span>
-                            <p>Name</p>
-                            <span class="material-icons-outlined delete-icon">
-                                delete
-                            </span>
-                        </li>
-                        <hr>
-                        <li class="task">
-                            <span class="material-icons-outlined checkbox">
-                                check_box_outline_blank
-                            </span>
-                            <p>Name</p>
-                            <span class="material-icons-outlined delete-icon">
-                                delete
-                            </span>
-                        </li>
-                        <hr>
-                        <li class="task">
-                            <span class="material-icons-outlined checkbox">
-                                check_box_outline_blank
-                            </span>
-                            <p>Name</p>
-                            <span class="material-icons-outlined delete-icon">
-                                delete
-                            </span>
+                            <div class="default-content">
+                                <span class="material-icons-outlined checkbox">check_box_outline_blank</span>
+    
+                                <p>Name</p>
+    
+                                <span class="material-icons-outlined drop-down-icon">expand_more</span>
+    
+                                <span class="material-icons-outlined delete-icon">delete</span>
+                            </div>
+                            <div class="hidden-content">
+                                <div class="due-date">
+                                    <p class="title">Due Date</p>
+                                    <p>11/10/1999</p>
+                                </div>
+                                <div class="project-name">
+                                    <p class="title">Project</p>
+                                    <p>Project One 234435356786</p>
+                                </div>
+                                <div class="details">
+                                    <p class="title">Details</p>
+                                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea porro quisquam eius consequuntur maxime asperiores molestiae eum perspiciatis quis ipsum.</p>
+                                </div>
+                                <span class="material-icons-outlined edit-icon">
+                                    edit_note
+                                </span>
+                            </div>
                         </li> -->
                     </ul>
 
@@ -134,26 +114,27 @@
                     </span>
 
                     <div class="new-task hide">
-                        <div class="text-input-container">
-                            <textarea type="text" class="task-title" placeholder="Complete the given home work" required
-                                rows="1"></textarea>
+                        <form action="#">
+                            <div class="text-input-container">
+                                <input type="text" class="task-title" placeholder="Title" required></input>
 
-                            <textarea type="text" class="task-desc" placeholder="Description" rows="2"></textarea>
-                        </div>
+                                <textarea type="text" class="task-desc" placeholder="Description" rows="2"></textarea>
+                            </div>
 
-                        <input type="date" class="task-schedule">
-                        <select class="select-project">
-                            <option value="Inbox" selected>Inbox</option>
-                        </select>
+                            <input type="date" class="task-schedule">
+                            <select class="select-project">
+                                <option value="Inbox" selected>Inbox</option>
+                            </select>
 
-                        <br>
+                            <br>
 
-                        <button type="submit" class="btn add">
-                            Add
-                        </button>
-                        <button class="btn cancel">
-                            Cancel
-                        </button>
+                            <button type="submit" class="btn add">
+                                Add
+                            </button>
+                            <button type="button" class="btn cancel">
+                                Cancel
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>

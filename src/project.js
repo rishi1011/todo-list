@@ -34,11 +34,29 @@ export default class Project {
         return true;
     }
 
+    getTodoFromList(title) {
+        let taskObj;
+        this.todos.forEach(obj => {
+            if (obj.getTitle() === title) {
+                taskObj = obj;
+            }
+        });
+        return taskObj;
+    }
+
+    deleteTask(taskObj) {
+        if (this.todos.includes(taskObj)) {
+            const idx = this.todos.indexOf(taskObj);
+            this.todos.splice(idx, 1);
+        }
+        return;
+    }
+
     isTodoDuplicate(todo) {
         let isDuplicate = false;
         this.todos.forEach(item => {
             if (item.getTitle() === todo.getTitle()) {
-                alert('The Task names must be different');
+                alert(`${this.getName()} already contains a task called '${item.getTitle()}'`);
                 isDuplicate = true;
             }
         });
@@ -53,9 +71,9 @@ export default class Project {
     }
 
     getUpcomingTodos() {
-        const todosThisWeek = this.todos.filter(todo => {
-            return isFuture(new Date(todo.date));
+        const todosUpcoming = this.todos.filter(todo => {
+            return !isToday(new Date(todo.date)) && isFuture(new Date(todo.date));
         });
-        return todosThisWeek;
+        return todosUpcoming;
     }
 }
