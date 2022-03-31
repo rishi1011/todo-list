@@ -24,11 +24,6 @@ export default class Todo{
     }
 
     setTitle(title) {
-        if (title === '') {
-            alert('Title is required!');
-            return;
-        }
-
         this.title = title;
     }
 

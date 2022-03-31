@@ -1,4 +1,4 @@
-import { format, lightFormat } from 'date-fns';
+import { format } from 'date-fns';
 import inLocale from 'date-fns/locale/en-IN';
 
 import TodoTask from './todo.js';
@@ -159,19 +159,10 @@ function hideNewTaskContainer() {
 }
 
 function hasCompletedTodoTask(checkbox, todo) {
-    let p = checkbox.nextElementSibling;
     let task = checkbox.parentElement.parentElement;
     task.classList.toggle('strike');
-
-    if (checkbox.innerText === 'check_box') {
-        checkbox.innerText = 'check_box_outline_blank';
-        const textContent = p.querySelector('strike').innerText;
-        p.innerHTML = `${textContent}`;
-    } else {
-        checkbox.innerText = 'check_box';
-        p.innerHTML = `<strike>${p.innerText}</strike>`;
-    }
     todo.toggleChecked();
+    checkbox.innerText = todo.isChecked ? 'check_box' : 'check_box_outline_blank';
 }
 
 function updateSelectedProjectFromSideBar(projectElement) {
@@ -391,7 +382,110 @@ function createEditIcon() {
     const span = document.createElement('span');
     span.classList.add('material-icons-outlined', 'edit-icon');
     span.innerText = 'edit_note';
+    span.addEventListener('click', addEditTaskContainer);
     return span;
+}
+
+function addEditTaskContainer(e) {
+    const todoElement = e.target.parentElement.parentElement;
+    const todoObj = getTodoObjFromElement(todoElement, projectHeader);
+
+    todoElement.appendChild(createEditTaskContainer(todoObj));
+
+}
+
+function createEditTaskContainer(todoObj) {
+    const div = document.createElement('div');
+    div.classList.add('edit-task');
+
+    const form = document.createElement('form');
+    
+    const textInputContainer = document.createElement('div');
+    textInputContainer.classList.add('text-input-container');
+
+    const titleInput = document.createElement('input');
+    titleInput.type = 'text';
+    titleInput.classList.add('task-title');
+    titleInput.value = todoObj.getTitle();
+    titleInput.required = true;
+    titleInput.placeholder = 'Title';
+
+    const descText = document.createElement('textarea');
+    // descText.type = 'text';
+    descText.classList.add('task-desc');
+    descText.rows = 2;
+    descText.innerText = todoObj.getDesc();
+    descText.placeholder = 'Description';
+
+    textInputContainer.appendChild(titleInput);
+    textInputContainer.appendChild(descText);
+
+    const dateInput = document.createElement('input');
+    dateInput.type = 'date';
+    dateInput.classList.add('task-schedule');
+    dateInput.value = todoObj.getDate();
+
+    const projectSelector = document.createElement('select');
+    projectSelector.classList.add('select-project');
+    createOptionElementsUnderSelectorForAllProjects(projectSelector, todoObj);
+
+    const br = document.createElement('br');
+
+    const editBtn = document.createElement('button');
+    editBtn.type = 'submit';
+    editBtn.classList.add('btn', 'edit');
+    editBtn.innerText = 'Edit';
+    editBtn.addEventListener('click', updateTodo);
+    editBtn.addEventListener('submit', updateTodo);
+
+    function updateTodo(e) {
+        e.preventDefault();
+
+        if (titleInput.validity.valueMissing) {
+            titleInput.reportValidity();
+            return;
+        }
+
+        todoObj.setTitle(titleInput.value);
+        todoObj.setDesc(descText.value);
+        todoObj.setDate(dateInput.value);
+        todoObj.setProject(projectSelector.value);
+        updateMainContent(todoObj.getProject());
+    }
+
+    const cancelBtn = document.createElement('button');
+    cancelBtn.type = 'button';
+    cancelBtn.classList.add('btn', 'cancel');
+    cancelBtn.innerText = 'Cancel';
+    cancelBtn.addEventListener('click', () => {
+        div.remove();
+    });
+
+    form.appendChild(textInputContainer);
+    form.appendChild(dateInput);
+    form.appendChild(projectSelector);
+    form.appendChild(br);
+    form.appendChild(editBtn);
+    form.appendChild(cancelBtn);
+
+    div.appendChild(form);
+
+    return div;
+}
+
+function createOptionElementsUnderSelectorForAllProjects(projectSelector, todoObj) {
+    allProjects.forEach(project => {
+        const title = project.getName();
+
+        const optionElement = document.createElement('option');
+        optionElement.innerText = title;
+        optionElement.value = title;
+        if (todoObj.getProject() === project) {
+            optionElement.selected = true;
+        }
+
+        projectSelector.appendChild(optionElement);
+    });
 }
 
 function createTodoElement(todo) {
@@ -565,4 +659,14 @@ function getTaskTitleFromFromCombinedName(combinedName) {
         }
     }
     return taskTitle.trim();
+}
+
+function getTodoObjFromElement(todoElement, projectHeader) {
+    const projectTitle = projectHeader.innerText;
+    const projectObj = getProjectObject(projectTitle);
+
+    const taskTitle = todoElement.querySelector('.default-content > p').innerText;
+    const taskObj = projectObj.getTodoFromList(taskTitle);
+
+    return taskObj;
 }
