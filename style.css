@@ -16,6 +16,16 @@
     --strike: lightgray;
 }
 
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
+}
+
 body {
     font-family: 'Open Sans', sans-serif;
     height: 100vh;
@@ -293,6 +303,14 @@ li.task.strike > .default-content > p{
     color: var(--strike);
 }
 
+li.task.strike > .default-content > .checkbox{
+    /* outline: 3px solid black; */
+}
+
+li.task.strike > .default-content > p{
+    text-decoration: line-through;
+}
+
 li.task:hover{
     background-color: var(--selected);
 }
@@ -395,7 +413,8 @@ li.task .title{
     display: none;
 }
 
-.new-task{
+.new-task,
+.edit-task{
     margin: 5px;
     padding: 16px;
     height: 190px;
@@ -403,6 +422,10 @@ li.task .title{
     overflow: hidden;
     background-color: var(--side-bar-color);
     outline: 1px solid var(--border-color);
+}
+
+.edit-task{
+    width: 100%;
 }
 
 .new-task.hide{
@@ -413,7 +436,8 @@ li.task .title{
     padding: 0 16px;
 }
 
-textarea[type="text"], input[type="text"]{
+textarea, 
+input[type="text"]{
     display: block;
     width: 100%;
     background: transparent;
@@ -425,19 +449,22 @@ textarea[type="text"], input[type="text"]{
     font-weight: 100;
 }
 
-textarea[type="text"]:focus, input[type='text']:focus,
+textarea:focus, 
+input[type='text']:focus,
 .task-schedule:focus,
-.select-project:focus{
+.select-project:focus
+.edit-project-selector:focus{
     outline: 0;
 }
 
-textarea[type="text"].task-desc{
+textarea.task-desc{
     font-size: 0.9rem;
     margin: 5px 0 15px 0;
 }
 
 .task-schedule,
-.select-project{
+.select-project,
+.edit-project-selector{
     border: .5px solid var(--border-color);
     font-family: inherit;
     font-weight: 100;
@@ -447,7 +474,8 @@ textarea[type="text"].task-desc{
     margin: 0 20px 10px 0;
 }
 
-.select-project{
+.select-project,
+.edit-project-selector{
     height: 23px;
     width: 70px;
     white-space: nowrap;
@@ -472,7 +500,8 @@ textarea[type="text"].task-desc{
     box-shadow: 0 0.5em 0.5em -0.4em var(--btn-color);
 }
 
-.btn.add{
+.btn.add,
+.btn.edit{
     margin-right: 5px;
 }
 
