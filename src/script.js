@@ -274,9 +274,9 @@ function createCheckBoxElement(todo) {
 function createParagraphElement(todo) {
     const p = document.createElement('p');
     p.innerText = todo.getTitle();
-    if (projectHeader.innerText === 'Today' || projectHeader.innerText === 'Upcoming') {
-        p.innerText += `  (${todo.getProject()})`;
-    }
+    // if (projectHeader.innerText === 'Today' || projectHeader.innerText === 'Upcoming') {
+    //     p.innerText += `  (${todo.getProject()})`;
+    // }
     return p;
 }
 
@@ -311,9 +311,13 @@ function deleteTaskListener(deleteIcon) {
     let taskObj;
 
     if (headerTitle === 'Today' || headerTitle === 'Upcoming') {
-        const taskText = deleteIcon.parentElement.querySelector('p').innerText;
-        projectTitle = getProjectTitleFromCombinedName(taskText);
-        taskTitle = getTaskTitleFromFromCombinedName(taskText);
+        const todoElement = deleteIcon.parentElement.parentElement;
+        projectTitle = todoElement.querySelector('.hidden-content > .project-name > .title').nextElementSibling.innerText;
+        taskTitle = todoElement.querySelector('.default-content > p').innerText;
+
+        // const taskText = deleteIcon.parentElement.querySelector('p').innerText;
+        // projectTitle = getProjectTitleFromCombinedName(taskText);
+        // taskTitle = getTaskTitleFromFromCombinedName(taskText);
 
         projectObj = getProjectObject(projectTitle);
         taskObj = projectObj.getTodoFromList(taskTitle);
@@ -388,10 +392,22 @@ function createEditIcon() {
 
 function addEditTaskContainer(e) {
     const todoElement = e.target.parentElement.parentElement;
-    const todoObj = getTodoObjFromElement(todoElement, projectHeader);
+    
+    const editTaskDiv = todoElement.querySelector('.edit-task');
+    if (editTaskDiv === null) {
+        const todoObj = getTodoObjFromElement(todoElement);
+        todoElement.appendChild(createEditTaskContainer(todoObj));
+    }
+}
 
-    todoElement.appendChild(createEditTaskContainer(todoObj));
+function getTodoObjFromElement(todoElement) {
+    const projectTitle = todoElement.querySelector('.hidden-content > .project-name > .title').nextElementSibling.innerText;
+    const projectObj = getProjectObject(projectTitle);
 
+    const taskTitle = todoElement.querySelector('.default-content > p').innerText;
+    const taskObj = projectObj.getTodoFromList(taskTitle);
+
+    return taskObj;
 }
 
 function createEditTaskContainer(todoObj) {
@@ -449,8 +465,13 @@ function createEditTaskContainer(todoObj) {
         todoObj.setTitle(titleInput.value);
         todoObj.setDesc(descText.value);
         todoObj.setDate(dateInput.value);
+        const oldProject = getProjectObject(todoObj.getProject());
+        const newProject = getProjectObject(projectSelector.value);
+        oldProject.deleteTask(todoObj);
+        newProject.addTodo(todoObj);
         todoObj.setProject(projectSelector.value);
-        updateMainContent(todoObj.getProject());
+        updateMainContent(projectHeader.innerText);
+        updateProjectTaskCount();
     }
 
     const cancelBtn = document.createElement('button');
@@ -661,12 +682,4 @@ function getTaskTitleFromFromCombinedName(combinedName) {
     return taskTitle.trim();
 }
 
-function getTodoObjFromElement(todoElement, projectHeader) {
-    const projectTitle = projectHeader.innerText;
-    const projectObj = getProjectObject(projectTitle);
 
-    const taskTitle = todoElement.querySelector('.default-content > p').innerText;
-    const taskObj = projectObj.getTodoFromList(taskTitle);
-
-    return taskObj;
-}
