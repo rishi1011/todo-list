@@ -238,8 +238,19 @@ function deleteProject(span) {
     deleteProjectObj(projectTitle);
     const projectElement = getProjectElementFromTitle(projectTitle);
     projectElement.remove();
+    removeProjectFromProjectSelector(projectTitle);
     updateProjectTaskCount();
     Storage.storeContent(allProjects);
+}
+
+function removeProjectFromProjectSelector(projectTitle) {
+    const selectorOptions = document.querySelectorAll('.select-project > option');
+    selectorOptions.forEach(option => {
+        if (option.innerText === projectTitle) {
+            option.remove();
+            return;
+        }
+    });
 }
 
 function addNewProjectUnderSelector(title) {
@@ -247,6 +258,8 @@ function addNewProjectUnderSelector(title) {
     listItem.value = title;
     listItem.innerText = title;
     projectSelector.appendChild(listItem);
+    const editProjectSelector = document.querySelector('.task > .edit-task .select-project');
+    if (editProjectSelector !== null) editProjectSelector.appendChild(listItem);
 }
 
 function selectProjectUnderSelector(title) {
