@@ -1,10 +1,10 @@
 export default class Todo{
-    constructor(title, desc, date, project) {
+    constructor(title, desc, date, project, isChecked = false) {
         this.title = title;
         this.desc = desc;
         this.date = date;
         this.project = project;
-        this.isChecked = false;
+        this.isChecked = isChecked;
     }
     
     getTitle() {

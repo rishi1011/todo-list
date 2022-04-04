@@ -3,6 +3,7 @@ import inLocale from 'date-fns/locale/en-IN';
 
 import TodoTask from './todo.js';
 import Project from './project.js';
+import Storage from './storage.js';
 
 const newTaskContainer = document.querySelector('.new-task');
 const addTaskBtn = document.querySelector('.add-task');
@@ -48,12 +49,10 @@ addProjectIcon.addEventListener('click', () => {
 
 function showAddProjectContainer() {
     addProjectContainer.classList.remove('hide');
-    // document.body.addEventListener('click', addProjectContainerListener);
 }
 
 function hideAddProjectContainer() {
     addProjectContainer.classList.add('hide');
-    // document.body.removeEventListener('click', addProjectContainerListener);
 }
 
 newTaskForm.addEventListener('submit', createNewTask);
@@ -81,6 +80,7 @@ function createNewTask(e) {
         updateMainContent(projectHeader.innerText);
         updateProjectTaskCount();
         updateTaskContainer(newTaskTitle, newTaskDesc);
+        Storage.storeContent(allProjects);
     }
 }
 
@@ -163,6 +163,7 @@ function hasCompletedTodoTask(checkbox, todo) {
     task.classList.toggle('strike');
     todo.toggleChecked();
     checkbox.innerText = todo.isChecked ? 'check_box' : 'check_box_outline_blank';
+    Storage.storeContent(allProjects);
 }
 
 function updateSelectedProjectFromSideBar(projectElement) {
@@ -205,9 +206,7 @@ function createNewProject(e) {
 
     addProjectContainer.classList.add('hide');
     createAndPushNewProject(newTitle);
-    const newProjectElement = createNewProjectElement(newTitle);
-    userProjectsContainer.appendChild(newProjectElement);
-    newProjectElement.addEventListener('click', () => addProjectListener(newProjectElement));
+    createNewProjectElement(newTitle);
 }
 
 function createNewProjectElement(title) {
@@ -221,6 +220,8 @@ function createNewProjectElement(title) {
     <p class="project-title">${title}</p>
     <span class="count"></span>`);
     addNewProjectUnderSelector(title);
+    newProjectElement.addEventListener('click', () => addProjectListener(newProjectElement));
+    userProjectsContainer.appendChild(newProjectElement);
     return newProjectElement;
 }
 
@@ -238,6 +239,7 @@ function deleteProject(span) {
     const projectElement = getProjectElementFromTitle(projectTitle);
     projectElement.remove();
     updateProjectTaskCount();
+    Storage.storeContent(allProjects);
 }
 
 function addNewProjectUnderSelector(title) {
@@ -274,9 +276,6 @@ function createCheckBoxElement(todo) {
 function createParagraphElement(todo) {
     const p = document.createElement('p');
     p.innerText = todo.getTitle();
-    // if (projectHeader.innerText === 'Today' || projectHeader.innerText === 'Upcoming') {
-    //     p.innerText += `  (${todo.getProject()})`;
-    // }
     return p;
 }
 
@@ -291,7 +290,13 @@ function createDropDownIconElement() {
 function dropDownTaskListener(dropDownIcon) {
     const taskElement = dropDownIcon.parentElement.parentElement;
     const hiddenContent = taskElement.querySelector('.hidden-content');
-    hiddenContent.classList.toggle('hide');
+    if (hiddenContent.classList.contains('hide')) {
+        hiddenContent.classList.remove('hide');
+    } else {
+        hiddenContent.classList.add('hide');
+        const div = document.querySelector('.edit-task');
+        if(div !== null) div.remove();
+    }
 }
 
 function createDeleteIcon() {
@@ -315,10 +320,6 @@ function deleteTaskListener(deleteIcon) {
         projectTitle = todoElement.querySelector('.hidden-content > .project-name > .title').nextElementSibling.innerText;
         taskTitle = todoElement.querySelector('.default-content > p').innerText;
 
-        // const taskText = deleteIcon.parentElement.querySelector('p').innerText;
-        // projectTitle = getProjectTitleFromCombinedName(taskText);
-        // taskTitle = getTaskTitleFromFromCombinedName(taskText);
-
         projectObj = getProjectObject(projectTitle);
         taskObj = projectObj.getTodoFromList(taskTitle);
 
@@ -334,6 +335,7 @@ function deleteTaskListener(deleteIcon) {
 
         projectObj.deleteTask(taskObj);
     }
+    Storage.storeContent(allProjects);
     const projectElement = getProjectElementFromTitle(projectTitle);
 
     updateSelectedProjectFromSideBar(projectElement);
@@ -348,7 +350,9 @@ function createDueDateElement(todo) {
     p1.classList.add('title');
     const p2 = document.createElement('p');
     p1.innerText = 'Due Date';
-    p2.innerText = todo.getDate();
+    p2.innerText = format(new Date(todo.getDate()), 'dd-MM-yyyy', {
+        locale: inLocale,
+    });
 
     div.appendChild(p1);
     div.appendChild(p2);
@@ -427,7 +431,6 @@ function createEditTaskContainer(todoObj) {
     titleInput.placeholder = 'Title';
 
     const descText = document.createElement('textarea');
-    // descText.type = 'text';
     descText.classList.add('task-desc');
     descText.rows = 2;
     descText.innerText = todoObj.getDesc();
@@ -472,6 +475,7 @@ function createEditTaskContainer(todoObj) {
         todoObj.setProject(projectSelector.value);
         updateMainContent(projectHeader.innerText);
         updateProjectTaskCount();
+        Storage.storeContent(allProjects);
     }
 
     const cancelBtn = document.createElement('button');
@@ -501,7 +505,7 @@ function createOptionElementsUnderSelectorForAllProjects(projectSelector, todoOb
         const optionElement = document.createElement('option');
         optionElement.innerText = title;
         optionElement.value = title;
-        if (todoObj.getProject() === project) {
+        if (todoObj.getProject() === title) {
             optionElement.selected = true;
         }
 
@@ -584,10 +588,34 @@ let tomorrow = new Date(today);
 tomorrow.setDate(tomorrow.getDate() + 1);
 tomorrow = format(tomorrow, 'yyyy-MM-dd', { locale: inLocale });
 
-let inboxProject = new Project('Inbox');
+let allProjects = [];
 
-const allProjects = [];
-allProjects.push(inboxProject);
+window.onload = function () {
+    const storedContent = Storage.getContent();
+    if (storedContent === null) {
+        const inboxProject = new Project('Inbox');
+        allProjects.push(inboxProject);
+    } else {
+        storedContent.forEach(data => {
+            let project = new Project(data.name);
+            project.setTodos(createTodoProjects(data.todos));
+            allProjects.push(project);
+            if (project.getName() !== 'Inbox')
+                createNewProjectElement(project.getName());
+        });
+        updateMainContent('Inbox');
+        updateProjectTaskCount();
+    }
+}
+
+function createTodoProjects(array) {
+    let todos = [];
+    array.forEach(item => {
+        let todo = new TodoTask(item.title, item.desc, item.date, item.project, item.isChecked);
+        todos.push(todo);
+    });
+    return todos;
+}
 
 function isDuplicateProjectName(title) {
     let isDuplicate = false;
@@ -603,6 +631,7 @@ function isDuplicateProjectName(title) {
 function createAndPushNewProject(title) {
     const newProject = new Project(title);
     allProjects.push(newProject);
+    Storage.storeContent(allProjects);
 }
 
 function getProjectTodos(projectTitle, projectObj) {
@@ -662,24 +691,6 @@ function deleteProjectObj(projectTitle) {
     const projectObj = getProjectObject(projectTitle);
     const objIdx = allProjects.indexOf(projectObj);
     allProjects.splice(objIdx, 1);
-}
-
-function getProjectTitleFromCombinedName(combinedName) {
-    const regex = /\((.*)\)/;
-    const projectTitle = combinedName.match(regex)[1];
-    return projectTitle;
-}
-
-function getTaskTitleFromFromCombinedName(combinedName) {
-    let taskTitle = '';
-    for (let i = 0; i < combinedName.length; i++) {
-        if (combinedName[i] !== '(') {
-            taskTitle += combinedName[i];
-        } else {
-            break;
-        }
-    }
-    return taskTitle.trim();
 }
 
 
