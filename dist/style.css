@@ -2,7 +2,7 @@
 
 *{
     box-sizing: border-box;
-    /* outline: 1px solid red; */
+    outline: 1px solid red;
 }
 
 :root{
@@ -231,7 +231,9 @@ li.selected{
 
 .clear-icon{
     cursor: pointer;
+    overflow: hidden;
     width: 0;
+    height: 0;
     opacity: 0;
     transition: all 0.2s ease-in-out;
 }
@@ -242,6 +244,7 @@ li.selected{
 
 li.user-project.selected > .clear-icon {
     width: auto;
+    height: auto;
     opacity: 1;
 }
 
