@@ -1,5 +1,4 @@
 const path = require('path');
-// const webpack = require('webpack');
 
 module.exports = {
     mode: "development",
@@ -8,10 +7,12 @@ module.exports = {
         filename: 'main.js',
         path: path.resolve(__dirname, 'dist'),
     },
-    // plugins: [
-    //     new webpack.ContextReplacementPlugin(
-    //         /date\-fns[\/\\]/,
-    //         new RegExp(`[/\\\\\](${supportedLocales.join('|')})[/\\\\\]index\.js$`)
-    //     ),
-    // ]
+    module: {
+        rules: [
+            {
+                test: /\.css$/i,
+                use: ['style-loader', 'css-loader'],
+            },
+        ],
+    }
 }

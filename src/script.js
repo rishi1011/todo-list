@@ -1,6 +1,8 @@
 import { format } from 'date-fns';
 import inLocale from 'date-fns/locale/en-IN';
 
+import './style.css';
+
 import TodoTask from './todo.js';
 import Project from './project.js';
 import Storage from './storage.js';
