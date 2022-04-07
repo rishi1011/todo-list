@@ -7,9 +7,6 @@ export default class Storage{
     
     static getContent() {
         const allProjects = JSON.parse(localStorage.getItem('todolist'));
-        allProjects.forEach(project => {
-
-        });
         return allProjects;
     }
 }

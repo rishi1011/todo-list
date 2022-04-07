@@ -48,6 +48,10 @@ addProjectIcon.addEventListener('click', () => {
 });
 
 function showAddProjectContainer() {
+    const projectTitleInput = document.querySelector('.add-project .new-title');
+    setTimeout(() => {
+        projectTitleInput.focus();
+    }, 100);
     addProjectContainer.classList.remove('hide');
 }
 
@@ -79,12 +83,12 @@ function createNewTask(e) {
     if (isAdded) {
         updateMainContent(projectHeader.innerText);
         updateProjectTaskCount();
-        updateTaskContainer(newTaskTitle, newTaskDesc);
+        resetTaskContainer(newTaskTitle, newTaskDesc);
         Storage.storeContent(allProjects);
     }
 }
 
-function updateTaskContainer(newTaskTitle, newTaskDesc) {
+function resetTaskContainer(newTaskTitle, newTaskDesc) {
     newTaskTitle.value = '';
     newTaskDesc.value = '';
 }
@@ -149,13 +153,21 @@ function showNewTaskContainer() {
     } else {
         taskSchedule.value = today;
     }
+    const taskTitleInput = document.querySelector('.new-task .task-title');
+    setTimeout(() => {
+        taskTitleInput.focus();
+    }, 250);
     newTaskContainer.classList.remove('hide');
     addTaskBtn.classList.add('hide');
 }
 
 function hideNewTaskContainer() {
+    const newTaskTitle = newTaskContainer.querySelector('.task-title');
+    const newTaskDesc = newTaskContainer.querySelector('.task-desc');
+    resetTaskContainer(newTaskTitle, newTaskDesc);
     newTaskContainer.classList.add('hide');
     addTaskBtn.classList.remove('hide');
+
 }
 
 function hasCompletedTodoTask(checkbox, todo) {
@@ -605,7 +617,8 @@ let allProjects = [];
 
 window.onload = function () {
     const storedContent = Storage.getContent();
-    if (storedContent === null) {
+    console.log(storedContent);
+    if (storedContent === null || storedContent === []) {
         const inboxProject = new Project('Inbox');
         allProjects.push(inboxProject);
     } else {
