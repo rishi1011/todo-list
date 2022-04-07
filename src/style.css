@@ -2,6 +2,7 @@
 
 *{
     box-sizing: border-box;
+    /* outline: 1px solid red; */
 }
 
 :root{
@@ -279,7 +280,20 @@ li.user-project.selected > .checklist-icon {
 .main-content{
     width: 100%;
     overflow: auto;
-    background-color: var(--main-content);
+    position: relative;
+    background: transparent;
+}
+
+.bg-img{
+    position: absolute;
+    height: 500px;
+    width: 500px;
+    z-index: -10;
+    text-align: center;
+    transform: translate(90%, 30%);
+    background-image: url('./images/undraw.svg');
+    background-repeat: no-repeat;
+    opacity: 0.2;
 }
 
 .project-content{
@@ -303,10 +317,6 @@ li.task{
 li.task.strike > .default-content > .checkbox,
 li.task.strike > .default-content > p{
     color: var(--strike);
-}
-
-li.task.strike > .default-content > .checkbox{
-    /* outline: 3px solid black; */
 }
 
 li.task.strike > .default-content > p{
@@ -354,15 +364,6 @@ li.task > .hidden-content > div{
 
 .hidden-content > .details{
     max-width: 500px;
-}
-
-.hidden-content > .details,
-.hidden-content > .project {
-    /* display: -webkit-box;
-    -webkit-line-clamp: 7;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis; */
 }
 
 li.task .title{
